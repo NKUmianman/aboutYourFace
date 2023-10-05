@@ -89,6 +89,8 @@ with mp_face_detection.FaceDetection(
                 # if cv2.waitKey(5) & 0xFF == 27:
                 #   break
                 for i in range(0, len(result)):
+                    # 将OpenCV图像从BGR转换为RGB
+                    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                     image = Image.fromarray(image)
                     draw = ImageDraw.Draw(image)
                     font = ImageFont.truetype(
@@ -96,6 +98,8 @@ with mp_face_detection.FaceDetection(
                     draw.text((x1, y1+i*40),
                               result[i], (255, 255, 255), font=font)
                     image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+                    # cv2.imshow('Camera', image)
+                    # cv2.waitKey(1)
             a2 = time.time()
         cv2.imshow('Camera', image)
         cv2.waitKey(1)
