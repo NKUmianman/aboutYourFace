@@ -79,6 +79,8 @@ with mp_face_detection.FaceDetection(
                     location.xmin, location.ymin, image_cols, image_rows)  # 获取人脸左上角的点
                 end_point = mp_drawing._normalized_to_pixel_coordinates(
                     location.xmin + location.width, location.ymin + location.height, image_cols, image_rows)  # 获取右下角的点
+                if start_point == None or end_point == None:
+                    break
                 x1, y1 = start_point  # 左上点坐标
                 x2, y2 = end_point  # 右下点坐标
                 # 为了营造相似环境，把左上角和右上角的点连线囊括的区域扩大提高准确度
