@@ -21,7 +21,7 @@ list_attr_en = np.array(["5_o_Clock_Shadow", "Arched_Eyebrows", "Attractive", "B
                          "Sideburns", "Smiling", "Straight_Hair", "Wavy_Hair", "Wearing_Earrings", "Wearing_Hat",
                          "Wearing_Lipstick", "Wearing_Necklace", "Wearing_Necktie", "Young"])  # 英文原版属性
 list_attr_cn = np.array(["不明显的胡子", "拱形眉毛", "有吸引力的", "眼袋", "秃头", "刘海", "大嘴唇", "大鼻子", "黑发", "金发", "模糊的", "棕发", "浓眉", "圆胖", "双下巴", "眼镜", "山羊胡子", "灰白发", "浓妆", "高高的颧骨",
-                         "男性", "嘴巴张开", "胡子", "眯眯眼", "没有胡子", "鹅蛋脸", "苍白皮肤", "尖鼻子", "后退的发际线", "红润脸颊",
+                         "男性", "嘴巴张开", "胡子", "眯眯眼", "没有胡子", "鹅蛋脸", "白皮肤", "尖鼻子", "后退的发际线", "红润脸颊",
                          "鬓角", "微笑", "直发", "卷发", "耳环", "帽子", "口红", "项链", "领带", "年轻"])  # 中文属性
 
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))  # 获取视频宽度
@@ -104,7 +104,7 @@ with mp_face_detection.FaceDetection(
                     # cv2.waitKey(1)
             a2 = time.time()
         cv2.imshow('Camera', image)
-        cv2.waitKey(1)
+        cv2.waitKey(2)
 
         # out.write(image)
         print(f'one pic time is {a2 - a1} s')

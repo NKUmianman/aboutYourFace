@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Real-time Webcam</title>
+    </head>
+    <body>
+        <h1>Real-time Webcam</h1>
+        <video id="webcam" autoplay></video>
+        <button id="startButton">Start Webcam</button>
+        <button id="stopButton">Stop Webcam</button>
+        <div id="feature"></div>
+
+        <script>
+            const videoElement = document.getElementById("webcam");
+            const startButton = document.getElementById("startButton");
+            const stopButton = document.getElementById("stopButton");
+            const featureElement = document.getElementById("feature");
+            let isCapturing = false;
+            let stream = null;
+
+            // Function to initialize the webcam
+            async function initializeWebcam() {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: true,
+                    });
+                    videoElement.srcObject = stream;
+                } catch (error) {
+                    console.error("Error accessing webcam: " + error);
+                }
+            }
+
+            // Request access to the webcam when the page loads
+            initializeWebcam();
+
+            startButton.addEventListener("click", () => {
+                if (!isCapturing) {
+                    isCapturing = true;
+                    captureAndSend();
+                }
+            });
+
+            stopButton.addEventListener("click", () => {
+                isCapturing = false;
+                stopCapturing();
+            });
+
+            async function captureAndSend() {
+                while (isCapturing) {
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d");
+                    canvas.width = videoElement.videoWidth;
+                    canvas.height = videoElement.videoHeight;
+                    context.drawImage(
+                        videoElement,
+                        0,
+                        0,
+                        canvas.width,
+                        canvas.height
+                    );
+                    const imageData = canvas.toDataURL("image/jpeg");
+
+                    try {
+                        const response = await fetch("/face_detection/", {
+                            method: "POST",
+                            body: JSON.stringify({ image: imageData }),
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            // Assuming the response is in JSON format
+                            console.log("Response from server:", data.result);
+                            // You can display the data in your UI, e.g., by adding it to a div element
+                            featureElement.textContent = data.result.toString();
+                        } else {
+                            // Handle non-OK response (e.g., display an error message)
+                            console.error("Error: " + response.status);
+                        }
+                    } catch (error) {
+                        // Handle errors that occur during the fetch or parsing of the response
+                        console.error("Error sending data to server:", error);
+                    }
+
+                    await new Promise((resolve) => setTimeout(resolve, 100)); // Adjust the interval as needed
+                }
+            }
+
+            function stopCapturing() {
+                if (stream) {
+                    const tracks = stream.getTracks();
+                    tracks.forEach((track) => track.stop());
+                }
+                isCapturing = false;
+                // Reinitialize the webcam after stopping it
+                initializeWebcam();
+            }
+        </script>
+    </body>
+</html>
